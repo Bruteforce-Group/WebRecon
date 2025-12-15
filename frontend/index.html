@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WebRecon Full-Stack</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header class="header">
+        <div>
+          <h1>WebRecon Full-Stack</h1>
+          <p class="subtle">
+            Safe-by-default OSINT web recon. Only scan systems you own or are authorized to test.
+          </p>
+        </div>
+      </header>
+
+      <section class="card">
+        <h2>New Scan</h2>
+
+        <form id="scanForm" class="form">
+          <label for="domains">Domains (one per line)</label>
+          <textarea
+            id="domains"
+            name="domains"
+            rows="4"
+            placeholder="bruteforce.group&#10;bozza.au&#10;borrowman.au"
+            autocomplete="off"
+            autocapitalize="none"
+            spellcheck="false"
+          ></textarea>
+
+          <div class="grid">
+            <div>
+              <label for="maxPages">Max pages</label>
+              <input id="maxPages" name="maxPages" type="number" min="1" max="500" value="5" />
+            </div>
+            <div>
+              <label for="maxDepth">Max depth</label>
+              <input id="maxDepth" name="maxDepth" type="number" min="0" max="10" value="1" />
+            </div>
+            <div>
+              <label for="schemes">Schemes</label>
+              <select id="schemes" name="schemes">
+                <option value="both">HTTP + HTTPS</option>
+                <option value="https">HTTPS only</option>
+                <option value="http">HTTP only</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid">
+            <label class="checkbox">
+              <input id="ignoreRobots" type="checkbox" checked />
+              Ignore robots.txt (only if authorized)
+            </label>
+            <label class="checkbox">
+              <input id="aiAnalysis" type="checkbox" checked />
+              Generate AI analysis (uses best available model)
+            </label>
+            <label class="checkbox">
+              <input id="authz" type="checkbox" />
+              I own these domains / I am authorized to test them
+            </label>
+          </div>
+
+          <button id="runBtn" type="submit">Run scan</button>
+          <div id="status" class="status"></div>
+        </form>
+      </section>
+
+      <section class="card">
+        <h2>Results</h2>
+        <div id="results" class="results subtle">No scans yet.</div>
+      </section>
+    </div>
+
+    <script src="/static/app.js"></script>
+  </body>
+</html>
+
+

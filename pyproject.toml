@@ -1,0 +1,45 @@
+[build-system]
+requires = ["hatchling>=1.25.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "webrecon-hardened"
+version = "0.0.0"
+description = "Hardened WebRecon script (safe-by-default OSINT web recon)."
+requires-python = ">=3.11"
+dependencies = [
+  "requests>=2.32.0",
+  "beautifulsoup4>=4.12.0",
+  "colorama>=0.4.6",
+  "tldextract>=5.0.0",
+  "python-whois>=0.9.0",
+  "dnspython>=2.6.0",
+  "lxml>=5.0.0",
+]
+
+[project.optional-dependencies]
+images = [
+  "pillow>=10.0.0",
+]
+server = [
+  "fastapi>=0.115.0",
+  "uvicorn[standard]>=0.30.0",
+  "pydantic>=2.7.0",
+]
+dev = [
+  "ruff>=0.14.0",
+  "bandit>=1.9.0",
+  "pip-audit>=2.10.0",
+]
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+ignore = ["E501", "W291", "W293"]
+
+[tool.hatch.build.targets.wheel]
+only-include = ["webrecon.py", "README.md"]
+
+

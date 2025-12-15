@@ -2,6 +2,35 @@
 
 **WebRecon** is an advanced Open Source Intelligence (OSINT) web reconnaissance tool designed for cybersecurity professionals, penetration testers, and security researchers. It automates the process of gathering intelligence from target websites through comprehensive crawling, data extraction, and analysis.
 
+## Full‑stack UI (local)
+
+This repo now includes a small **FastAPI backend + static frontend** that:
+
+- Runs the hardened `webrecon` scan **inside the existing Docker Compose isolation stack** (`router` proxy + `webrecon` container)
+- Saves per‑scan artifacts under `data/scans/<scan_id>/`
+- Optionally generates an AI-assisted report via `tools/ai_analyze_reports.py` (auto-routes to the best available model)
+
+### Prereqs
+
+- Docker Desktop (for the isolated router + scan containers)
+- `uv` (Python env manager)
+
+### Run
+
+From the repo root:
+
+```bash
+uv sync --extra server --no-install-project
+uv run uvicorn backend.app.main:app --reload --port 8000
+```
+
+Open the UI at `http://127.0.0.1:8000/`.
+
+### Notes
+
+- You must check the “I own / am authorized” box in the UI before scans will run.
+- The backend will automatically add requested domains to `router/allowed_domains.txt` and restart the proxy.
+
 
 **Advanced OSINT Web Reconnaissance Tool**
 

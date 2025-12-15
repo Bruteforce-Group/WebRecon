@@ -1,0 +1,57 @@
+services:
+  router:
+    build:
+      context: ./router
+    networks:
+      recon_net:
+      egress_net:
+    # Keep router internal-only by default (no published ports).
+    # To debug, you can temporarily add: ports: ["3128:3128"]
+    read_only: true
+    tmpfs:
+      - /var/cache/squid:rw,noexec,nosuid,size=256m
+      - /var/log/squid:rw,noexec,nosuid,size=64m
+      - /tmp:rw,noexec,nosuid,size=64m
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - ./router/squid.conf:/etc/squid/squid.conf:ro
+      - ./router/allowed_domains.txt:/etc/squid/allowed_domains.txt:ro
+
+  webrecon:
+    build:
+      context: .
+    depends_on:
+      - router
+    networks:
+      - recon_net
+    environment:
+      # Force all HTTP(S) through the router/proxy.
+      HTTP_PROXY: http://router:3128
+      HTTPS_PROXY: http://router:3128
+      NO_PROXY: router,localhost,127.0.0.1
+    volumes:
+      - ./webrecon_output:/app/webrecon_output
+      # Backend stores per-scan artifacts under ./data/scans; mount it so the container can write reports there.
+      - ./data:/app/data
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=256m
+      - /home/app:rw,noexec,nosuid,size=256m
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 256
+
+networks:
+  # WebRecon lives ONLY on this internal network, so it has no direct internet egress.
+  recon_net:
+    internal: true
+  # Router has a second network with internet egress.
+  egress_net:
+    internal: false
+
+
